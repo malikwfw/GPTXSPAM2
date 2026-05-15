@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkGPT — L'IA Sans Limites</title>
+    <meta name="description" content="DarkGPT — L'intelligence artificielle non censurée. Posez les questions que personne ne veut entendre.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+:root {
+    --bg-primary: #060608;
+    --bg-secondary: #0c0c10;
+    --bg-card: rgba(255, 255, 255, 0.03);
+    --bg-card-hover: rgba(255, 255, 255, 0.06);
+    --accent: #e53935;
+    --accent-hover: #ff5252;
+    --accent-glow: rgba(229, 57, 53, 0.25);
+    --accent-subtle: rgba(229, 57, 53, 0.08);
+    --discord: #5865F2;
+    --text-primary: #f0f0f0;
+    --text-secondary: #8a8a9a;
+    --text-muted: #55556a;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(255, 255, 255, 0.12);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --radius: 12px;
+    --radius-lg: 20px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+/* NAVBAR */
+.navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    background: rgba(6, 6, 8, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+.navbar.scrolled {
+    padding: 10px 0;
+    background: rgba(6, 6, 8, 0.95);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.navbar-inner {
+    max-width: 1140px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; color: white;
+}
+.logo-img { width: 32px; height: 32px; border-radius: 8px; }
+.logo-img-footer { width: 32px; height: 32px; border-radius: 8px; }
+.logo-accent { color: var(--accent); }
+.nav-links {
+    display: flex; gap: 32px;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
+}
+.nav-links a:hover { color: var(--text-primary); }
+.nav-actions { display: flex; align-items: center; gap: 15px; }
+.lang-switcher {
+    display: flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50px;
+    padding: 3px; gap: 2px;
+    height: 36px; align-items: center;
+}
+.lang-btn {
+    background: transparent; border: none; color: var(--text-muted);
+    padding: 0 14px; height: 100%; border-radius: 50px;
+    font-size: 0.72rem; font-weight: 900; cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; align-items: center; justify-content: center; letter-spacing: 0.5px;
+}
+.lang-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(229,57,53,0.3); }
+.lang-btn:not(.active):hover { color: var(--text-secondary); background: rgba(255,255,255,0.03); }
+.btn-cta-nav {
+    background: var(--accent); color: white;
+    padding: 10px 22px; border-radius: 10px;
+    font-weight: 600; font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex; align-items: center;
+}
+.btn-cta-nav:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+/* HERO */
+.hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 140px 24px 100px; overflow: hidden;
+}
+.hero-glow {
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(ellipse, rgba(229,57,53,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent);
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-subtle);
+    border: 1px solid rgba(229,57,53,0.2);
+    color: var(--accent);
+    padding: 8px 18px; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 600; margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+}
+.badge-dot {
+    width: 8px; height: 8px; background: var(--accent);
+    border-radius: 50%; animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+}
+.hero-title {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 900; letter-spacing: -2px; line-height: 1.1;
+    margin-bottom: 24px; animation: fadeUp 0.6s ease 0.1s both;
+}
+.gradient-text {
+    background: linear-gradient(135deg, var(--accent), #ff6b6b, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-subtitle {
+    font-size: 1.15rem; color: var(--text-secondary);
+    max-width: 580px; margin: 0 auto 40px; line-height: 1.7;
+    animation: fadeUp 0.6s ease 0.2s both;
+}
+.hero-actions {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; margin-bottom: 60px; animation: fadeUp 0.6s ease 0.3s both;
+}
+.btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: white;
+    padding: 14px 32px; border-radius: var(--radius);
+    font-weight: 700; font-size: 1rem; transition: all 0.25s;
+    border: none; cursor: pointer;
+}
+.btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 8px 30px var(--accent-glow);
+    transform: translateY(-2px);
+}
+.glow-btn { box-shadow: 0 4px 20px var(--accent-glow); }
+.btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-secondary); padding: 14px 24px;
+    border-radius: var(--radius); font-weight: 600; font-size: 0.95rem;
+    border: 1px solid var(--border); transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.hero-stats {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; animation: fadeUp 0.6s ease 0.4s both;
+}
+.stat { text-align: center; }
+.stat-number { display: block; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -1px; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+.stat-divider { width: 1px; height: 40px; background: var(--border); }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* SECTION HEADER */
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-tag {
+    display: inline-block; background: var(--accent-subtle); color: var(--accent);
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 20px;
+}
+.section-title { font-size: clamp(2rem,4vw,2.8rem); font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 16px; }
+.section-subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+/* FEATURES */
+.features-section {
+    padding: 120px 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 2;
+}
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.feature-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 36px 28px; transition: all 0.3s ease;
+}
+.feature-card:hover {
+    background: var(--bg-card-hover); border-color: var(--border-hover);
+    transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.feature-icon {
+    width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+    background: var(--accent-subtle); border-radius: 12px;
+    color: var(--accent); font-size: 1.2rem; margin-bottom: 20px;
+}
+.feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+.feature-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* PRICING */
+.pricing-section {
+    padding: 120px 0; position: relative;
+    background: var(--bg-primary); overflow: hidden; z-index: 2;
+}
+.pricing-section::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    pointer-events: none;
+}
+.pricing-section::after {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(229,57,53,0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+.pricing-cards-grid {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 20px; margin-top: 80px; padding-bottom: 40px;
+}
+.price-card {
+    background: rgba(14,14,18,0.6); backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 28px; padding: 35px 25px;
+    display: flex; flex-direction: column;
+    position: relative; transition: all 0.4s cubic-bezier(0.165,0.84,0.44,1);
+    height: 100%;
+}
+.price-card:hover {
+    transform: translateY(-10px); border-color: rgba(255,255,255,0.15);
+    background: rgba(20,20,25,0.8); box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+}
+.price-card.popular {
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 0 40px rgba(229,57,53,0.15);
+}
+.popular-badge {
+    position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: white;
+    padding: 6px 18px; border-radius: 50px;
+    font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; box-shadow: 0 5px 15px rgba(229,57,53,0.4); z-index: 2;
+}
+.price-card h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
+.price-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 25px; min-height: 40px; }
+.price-amount { margin-bottom: 8px; display: flex; align-items: baseline; gap: 5px; }
+.amount { font-size: 2.8rem; font-weight: 900; color: #fff; letter-spacing: -1.5px; }
+.period { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
+.price-annual-tag {
+    font-size: 0.75rem; color: #10b981; font-weight: 600; margin-bottom: 20px;
+    background: rgba(16,185,129,0.08); padding: 4px 12px; border-radius: 8px;
+    display: inline-block; border: 1px solid rgba(16,185,129,0.15);
+}
+.price-features { list-style: none !important; margin-bottom: 30px; flex-grow: 1; padding: 0; }
+.price-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.4;
+}
+.price-features li i { color: #10b981; font-size: 0.85rem; margin-top: 3px; }
+.price-btn {
+    width: 100%; padding: 14px; border-radius: 14px;
+    font-weight: 800; font-size: 0.95rem; text-align: center;
+    transition: all 0.3s; cursor: pointer; border: none;
+    text-decoration: none; display: inline-block; margin-top: auto;
+}
+.price-btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 25px rgba(229,57,53,0.3); }
+.price-btn-primary:hover { background: var(--accent-hover); transform: scale(1.02); box-shadow: 0 15px 35px rgba(229,57,53,0.45); }
+.price-btn-outline { background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+.price-btn-outline:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.3); }
+.payment-crypto { text-align: center; margin-top: 15px; font-size: 0.7rem; color: var(--text-muted); opacity: 0.7; }
+.btn-discord-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #5865F2; color: white;
+    padding: 14px 32px; border-radius: var(--radius);
+    font-weight: 700; font-size: 1rem; transition: all 0.25s;
+}
+.btn-discord-cta:hover { background: #4752d9; box-shadow: 0 8px 30px rgba(88,101,242,0.4); transform: translateY(-2px); }
+
+/* HOW IT WORKS */
+.how-section { padding: 120px 0; position: relative; z-index: 2; }
+.steps-grid { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.step-card {
+    flex: 1; max-width: 320px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 40px 28px;
+    text-align: center; transition: all 0.3s ease;
+}
+.step-card:hover { border-color: rgba(229,57,53,0.3); box-shadow: 0 0 40px rgba(229,57,53,0.05); }
+.step-number { font-size: 2.5rem; font-weight: 900; color: var(--accent); opacity: 0.3; margin-bottom: 16px; letter-spacing: -2px; }
+.step-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+.step-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+.step-connector { color: var(--text-muted); font-size: 1.2rem; flex-shrink: 0; }
+
+/* TESTIMONIALS */
+.testimonials-section {
+    padding: 120px 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 2;
+}
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.testimonial-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px 28px; transition: all 0.3s;
+}
+.testimonial-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.testimonial-stars { color: #fbbf24; font-size: 1rem; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-card > p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent-subtle); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+}
+.author-name { font-weight: 600; font-size: 0.9rem; }
+.author-role { font-size: 0.78rem; color: var(--text-muted); }
+
+/* FOOTER */
+.site-footer { border-top: 1px solid var(--border); padding: 50px 0 30px; position: relative; z-index: 2; }
+.footer-inner { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+.footer-brand .logo { font-size: 1.15rem; justify-content: center; }
+.footer-tagline { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; }
+.footer-links { display: flex; gap: 24px; font-size: 0.85rem; color: var(--text-secondary); }
+.footer-links a:hover { color: var(--text-primary); }
+.footer-copy { font-size: 0.78rem; color: var(--text-muted); }
+
+/* CANVAS */
+#emberCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.navbar { z-index: 100; }
+.hero, .features-section, .pricing-section, .how-section, .testimonials-section, .site-footer { position: relative; z-index: 2; }
+
+/* REVEAL */
+[data-reveal] {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    will-change: opacity, transform;
+}
+[data-reveal].revealed { opacity: 1; transform: translateY(0); }
+.step-connector[data-reveal] { transform: translateX(-15px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.step-connector[data-reveal].revealed { transform: translateX(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1200px) { .pricing-cards-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 992px) { .nav-actions { gap: 10px; } }
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .steps-grid { flex-direction: column; }
+    .step-connector { transform: rotate(90deg); }
+    .hero-stats { flex-direction: column; gap: 20px; }
+    .stat-divider { width: 40px; height: 1px; }
+    .hero-actions { flex-direction: column; }
+}
+@media (max-width: 650px) {
+    .pricing-cards-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+}
+    </style>
+</head>
+<body>
+
+<canvas id="emberCanvas"></canvas>
+
+<header class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="/" class="logo">
+            <svg class="logo-img" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#1a0a0a"/>
+                <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="18" font-weight="900" fill="#e53935">D</text>
+            </svg>
+            Dark<span class="logo-accent">GPT</span>
+        </a>
+        <nav class="nav-links">
+            <a href="#features" data-i18n="nav_features">Fonctionnalités</a>
+            <a href="#tarifs" data-i18n="nav_pricing">Tarifs</a>
+            <a href="#how" data-i18n="nav_how">Comment ça marche</a>
+            <a href="#testimonials" data-i18n="nav_testimonials">Avis</a>
+        </nav>
+        <div class="nav-actions">
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="fr">FR</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <a href="#" class="btn-cta-nav" data-i18n="nav_login">
+                <i class="fa-brands fa-discord" style="margin-right:6px;"></i>
+                Se connecter
+            </a>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid-bg"></div>
+    <div class="container hero-content">
+        <div class="hero-badge" data-reveal data-reveal-delay="0" data-i18n="hero_badge">
+            <span class="badge-dot"></span>
+            IA Non Censurée — Disponible maintenant
+        </div>
+        <h1 class="hero-title" data-reveal data-reveal-delay="100">
+            <span data-i18n="hero_title_1">L'intelligence sans</span><br>
+            <span class="gradient-text" data-i18n="hero_title_2">aucune limite.</span>
+        </h1>
+        <p class="hero-subtitle" data-reveal data-reveal-delay="200" data-i18n="hero_subtitle">
+            DarkGPT répond à tout, sans filtres ni restrictions.
+            Cybersécurité, finance, OSINT, code, rédaction — sans modération.
+        </p>
+        <div class="hero-actions" data-reveal data-reveal-delay="300">
+            <a href="#" class="btn-primary glow-btn">
+                <i class="fa-brands fa-discord"></i>
+                <span data-i18n="btn_start">Se connecter</span>
+            </a>
+            <a href="#features" class="btn-ghost">
+                <span data-i18n="btn_discover">Découvrir</span>
+                <i class="fa-solid fa-arrow-down" style="margin-left:6px;"></i>
+            </a>
+        </div>
+        <div class="hero-stats" data-reveal data-reveal-delay="400">
+            <div class="stat">
+                <span class="stat-number">∞</span>
+                <span class="stat-label" data-i18n="stat_limit">Sans limites</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label" data-i18n="stat_avail">Disponible</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-number">&lt;2s</span>
+                <span class="stat-label" data-i18n="stat_speed">Temps de réponse</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="section-header" data-reveal>
+            <span class="section-tag" data-i18n="section_features_tag">Fonctionnalités</span>
+            <h2 class="section-title">
+                <span data-i18n="section_features_title_1">Tout ce dont vous avez</span>
+                <span class="gradient-text" data-i18n="section_features_title_2"> besoin.</span>
+            </h2>
+            <p class="section-subtitle" data-i18n="section_features_subtitle">Des capacités avancées pour chaque domaine, sans aucune restriction.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" data-reveal data-reveal-delay="0">
+                <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 data-i18n="feat_cyber_title">Cybersécurité</h3>
+                <p data-i18n="feat_cyber_desc">Analyse de vulnérabilités, OSINT, pentesting — sans aucun filtre de sécurité.</p>
+            </div>
+            <div class="feature-card" data-reveal data-reveal-delay="100">
+                <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
+                <h3 data-i18n="feat_code_title">Génération de Code</h3>
+                <p data-i18n="feat_code_desc">Python, JavaScript, C++, Rust — code généré sans restrictions ni avertissements.</p>
+            </div>
+            <div class="feature-card" data-reveal data-reveal-delay="200">
+                <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3 data-i18n="feat_finance_title">Finance & Trading</h3>
+                <p data-i18n="feat_finance_desc">Analyses de marché, stratégies d'investissement et prédictions sans limites.</p>
+            </div>
+            <div class="feature-card" data-reveal data-reveal-delay="300">
+                <div class="feature-icon"><i class="fa-solid fa-language"></i></div>
+                <h3 data-i18n="feat_multi_title">Multilingue</h3>
+                <p data-i18n="feat_multi_desc">Traduction et rédaction dans +50 langues avec une précision native.</p>
+            </div>
+            <div class="feature-card" data-reveal data-reveal-delay="400">
+                <div class="feature-icon"><i class="fa-solid fa-image"></i></div>
+                <h3 data-i18n="feat_vision_title">Analyse d'Images</h3>
+                <p data-i18n="feat_vision_desc">Envoyez une image et recevez une analyse détaillée grâce à la vision IA.</p>
+            </div>
+            <div class="feature-card" data-reveal data-reveal-delay="500">
+                <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h3 data-i18n="feat_instant_title">Réponses Instantanées</h3>
+                <p data-i18n="feat_instant_desc">Streaming en temps réel. Vos réponses arrivent mot par mot, sans attente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pricing-section" id="tarifs">
+    <div class="container">
+        <div class="section-header" data-reveal>
+            <span class="section-tag" data-i18n="section_pricing_tag">Puissance</span>
+            <h2 class="section-title">
+                <span data-i18n="section_pricing_title_1">Choisissez</span>
+                <span class="gradient-text" data-i18n="section_pricing_title_2"> votre camp.</span>
+            </h2>
+            <p class="section-subtitle" data-i18n="section_pricing_subtitle">Un système de gems transparent : payez uniquement ce que vous utilisez.</p>
+        </div>
+        <div class="pricing-cards-grid" data-reveal>
+            <div class="price-card" data-reveal data-reveal-delay="0">
+                <h3>Gratuit</h3>
+                <p class="price-subtitle">Découvrir DarkGPT</p>
+                <div class="price-amount">
+                    <span class="amount">0€</span>
+                    <span class="period" data-i18n="period_month">/mois</span>
+                </div>
+                <div class="price-annual-tag">Offert pour tester</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>15 gems / semaine</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Mistral-3B / 12B / 14B ILLIMITÉS</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Non cumulables</span></li>
+                    <li><i class="fa-solid fa-xmark" style="color:#555;"></i> <span style="color:#666;">Pas d'OSINT / Claude / Gemini</span></li>
+                </ul>
+                <a href="#" class="price-btn price-btn-outline">Commencer</a>
+            </div>
+            <div class="price-card" data-reveal data-reveal-delay="100">
+                <h3>Basic</h3>
+                <p class="price-subtitle">Pour les utilisateurs réguliers</p>
+                <div class="price-amount">
+                    <span class="amount">19.99€</span>
+                    <span class="period" data-i18n="period_month">/mois</span>
+                </div>
+                <div class="price-annual-tag">Annuel : 191.90€ (-20%)</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>1 200 gems / jour</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Accès complet OSINT</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Tous les modèles IA</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Vitesse standard</span></li>
+                </ul>
+                <a href="#" class="price-btn price-btn-outline">Choisir Basic</a>
+                <p class="payment-crypto" data-i18n="crypto_text">Paiement Crypto / PayPal</p>
+            </div>
+            <div class="price-card popular" data-reveal data-reveal-delay="200">
+                <div class="popular-badge" data-i18n="popular_badge">Populaire</div>
+                <h3>Gold</h3>
+                <p class="price-subtitle">Le meilleur rapport puissance/prix</p>
+                <div class="price-amount">
+                    <span class="amount">49.99€</span>
+                    <span class="period" data-i18n="period_month">/mois</span>
+                </div>
+                <div class="price-annual-tag">Annuel : 479.90€ (-20%)</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>3 500 gems / jour</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Accès complet OSINT</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Vision & Analyse de fichiers</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Vitesse rapide</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Priorité sur les serveurs</span></li>
+                </ul>
+                <a href="#" class="price-btn price-btn-primary">Choisir Gold</a>
+                <p class="payment-crypto" data-i18n="crypto_text">Paiement Crypto / PayPal</p>
+            </div>
+            <div class="price-card" data-reveal data-reveal-delay="300">
+                <h3>Platinum</h3>
+                <p class="price-subtitle">La puissance maximale</p>
+                <div class="price-amount">
+                    <span class="amount">99.99€</span>
+                    <span class="period" data-i18n="period_month">/mois</span>
+                </div>
+                <div class="price-annual-tag">Annuel : 959.90€ (-20%)</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>8 000 gems / jour</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>OSINT illimité</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Mode Thinking (Raisonnement)</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Vitesse Turbo</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>Support VIP Prioritaire</span></li>
+                </ul>
+                <a href="#" class="price-btn price-btn-outline">Choisir Platinum</a>
+                <p class="payment-crypto" data-i18n="crypto_text">Paiement Crypto / PayPal</p>
+            </div>
+        </div>
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="https://discord.gg/FbHBkPaV5Y" target="_blank" class="btn-discord-cta">
+                <i class="fa-brands fa-discord"></i>
+                <span data-i18n="btn_join_discord">Rejoindre le Discord</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="how-section" id="how">
+    <div class="container">
+        <div class="section-header" data-reveal>
+            <span class="section-tag" data-i18n="section_how_tag">Simple</span>
+            <h2 class="section-title">
+                <span data-i18n="section_how_title_1">Prêt en</span>
+                <span class="gradient-text" data-i18n="section_how_title_2"> 30 secondes.</span>
+            </h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card" data-reveal data-reveal-delay="0">
+                <div class="step-number">01</div>
+                <h3 data-i18n="step_1_title">Connectez-vous avec Discord</h3>
+                <p data-i18n="step_1_desc">Un seul clic. Pas de formulaire, pas d'email, pas de mot de passe.</p>
+            </div>
+            <div class="step-connector" data-reveal data-reveal-delay="150"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="step-card" data-reveal data-reveal-delay="200">
+                <div class="step-number">02</div>
+                <h3 data-i18n="step_2_title">Posez votre question</h3>
+                <p data-i18n="step_2_desc">Tapez ce que vous voulez. Texte, image, code — tout est accepté.</p>
+            </div>
+            <div class="step-connector" data-reveal data-reveal-delay="350"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="step-card" data-reveal data-reveal-delay="400">
+                <div class="step-number">03</div>
+                <h3 data-i18n="step_3_title">Recevez une réponse libre</h3>
+                <p data-i18n="step_3_desc">DarkGPT répond sans censure, sans disclaimers, sans limites.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials-section" id="testimonials">
+    <div class="container">
+        <div class="section-header" data-reveal>
+            <span class="section-tag" data-i18n="nav_testimonials">Avis</span>
+            <h2 class="section-title">Ce que disent <span class="gradient-text">nos utilisateurs.</span></h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card" data-reveal data-reveal-delay="0">
+                <div class="testimonial-stars">★★★★★</div>
+                <p>"DarkGPT m'a aidé à analyser des vulnérabilités que les autres IA refusaient même de mentionner. Indispensable pour mon travail en pentest."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">A</div>
+                    <div>
+                        <div class="author-name">Alex_0x</div>
+                        <div class="author-role">Pentester</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-reveal data-reveal-delay="100">
+                <div class="testimonial-stars">★★★★★</div>
+                <p>"Enfin une IA qui répond vraiment à mes questions de trading sans me sortir des disclaimers inutiles. Les analyses sont précises et actionnables."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">M</div>
+                    <div>
+                        <div class="author-name">MaxTrader</div>
+                        <div class="author-role">Trader indépendant</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-reveal data-reveal-delay="200">
+                <div class="testimonial-stars">★★★★★</div>
+                <p>"Le mode OSINT est incroyable. J'ai pu retrouver des informations que je pensais introuvables en quelques secondes. Abonnement Gold vaut chaque centime."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">S</div>
+                    <div>
+                        <div class="author-name">Shadow_R</div>
+                        <div class="author-role">Investigateur OSINT</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <a href="/" class="logo">
+                <svg class="logo-img-footer" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="8" fill="#1a0a0a"/>
+                    <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="18" font-weight="900" fill="#e53935">D</text>
+                </svg>
+                Dark<span class="logo-accent">GPT</span>
+            </a>
+            <p class="footer-tagline" data-i18n="footer_tagline">L'IA sans limites, créée par vardox58 & LeChancelier.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#" data-i18n="footer_cgu">CGU</a>
+            <a href="#" data-i18n="footer_privacy">Confidentialité</a>
+            <a href="#" data-i18n="footer_contact">Contact</a>
+        </div>
+        <p class="footer-copy" data-i18n="footer_copy">© 2026 DarkGPT — Tous droits réservés.</p>
+    </div>
+</footer>
+
+<script>
+window.translations = {
+    fr: {
+        nav_features: "Fonctionnalités", nav_pricing: "Tarifs",
+        nav_how: "Comment ça marche", nav_testimonials: "Avis", nav_login: "Se connecter",
+        hero_badge: "IA Non Censurée — Disponible maintenant",
+        hero_title_1: "L'intelligence sans", hero_title_2: "aucune limite.",
+        hero_subtitle: "DarkGPT répond à tout, sans filtres ni restrictions. Cybersécurité, finance, OSINT, code, rédaction — sans modération.",
+        btn_start: "Se connecter", btn_discover: "Découvrir",
+        stat_limit: "Sans limites", stat_avail: "Disponible", stat_speed: "Temps de réponse",
+        section_features_tag: "Fonctionnalités",
+        section_features_title_1: "Tout ce dont vous avez", section_features_title_2: " besoin.",
+        section_features_subtitle: "Des capacités avancées pour chaque domaine, sans aucune restriction.",
+        feat_cyber_title: "Cybersécurité", feat_cyber_desc: "Analyse de vulnérabilités, OSINT, pentesting — sans aucun filtre de sécurité.",
+        feat_code_title: "Génération de Code", feat_code_desc: "Python, JavaScript, C++, Rust — code généré sans restrictions ni avertissements.",
+        feat_finance_title: "Finance & Trading", feat_finance_desc: "Analyses de marché, stratégies d'investissement et prédictions sans limites.",
+        feat_multi_title: "Multilingue", feat_multi_desc: "Traduction et rédaction dans +50 langues avec une précision native.",
+        feat_vision_title: "Analyse d'Images", feat_vision_desc: "Envoyez une image et recevez une analyse détaillée grâce à la vision IA.",
+        feat_instant_title: "Réponses Instantanées", feat_instant_desc: "Streaming en temps réel. Vos réponses arrivent mot par mot, sans attente.",
+        section_pricing_tag: "Puissance", section_pricing_title_1: "Choisissez", section_pricing_title_2: " votre camp.",
+        section_pricing_subtitle: "Un système de gems transparent : payez uniquement ce que vous utilisez.",
+        btn_join_discord: "Rejoindre le Discord",
+        section_how_tag: "Simple", section_how_title_1: "Prêt en", section_how_title_2: " 30 secondes.",
+        step_1_title: "Connectez-vous avec Discord", step_1_desc: "Un seul clic. Pas de formulaire, pas d'email, pas de mot de passe.",
+        step_2_title: "Posez votre question", step_2_desc: "Tapez ce que vous voulez. Texte, image, code — tout est accepté.",
+        step_3_title: "Recevez une réponse libre", step_3_desc: "DarkGPT répond sans censure, sans disclaimers, sans limites.",
+        footer_tagline: "L'IA sans limites, créée par vardox58 & LeChancelier.",
+        footer_cgu: "CGU", footer_privacy: "Confidentialité", footer_contact: "Contact",
+        footer_copy: "© 2026 DarkGPT — Tous droits réservés.",
+        crypto_text: "Paiement Crypto / PayPal", popular_badge: "Populaire", period_month: "/mois"
+    },
+    en: {
+        nav_features: "Features", nav_pricing: "Pricing",
+        nav_how: "How it works", nav_testimonials: "Reviews", nav_login: "Login",
+        hero_badge: "Uncensored AI — Available now",
+        hero_title_1: "Intelligence without", hero_title_2: "any limits.",
+        hero_subtitle: "DarkGPT answers everything, without filters or restrictions. Cybersecurity, finance, OSINT, code, writing — without moderation.",
+        btn_start: "Login", btn_discover: "Discover",
+        stat_limit: "No limits", stat_avail: "Available", stat_speed: "Response time",
+        section_features_tag: "Features",
+        section_features_title_1: "Everything you", section_features_title_2: " need.",
+        section_features_subtitle: "Advanced capabilities for every field, without any restrictions.",
+        feat_cyber_title: "Cybersecurity", feat_cyber_desc: "Vulnerability analysis, OSINT, pentesting — without any security filters.",
+        feat_code_title: "Code Generation", feat_code_desc: "Python, JavaScript, C++, Rust — code generated without restrictions or warnings.",
+        feat_finance_title: "Finance & Trading", feat_finance_desc: "Market analysis, investment strategies and predictions without limits.",
+        feat_multi_title: "Multilingual", feat_multi_desc: "Translation and writing in +50 languages with native precision.",
+        feat_vision_title: "Image Analysis", feat_vision_desc: "Send an image and receive a detailed analysis thanks to AI vision.",
+        feat_instant_title: "Instant Responses", feat_instant_desc: "Real-time streaming. Your answers arrive word by word, without waiting.",
+        section_pricing_tag: "Power", section_pricing_title_1: "Choose", section_pricing_title_2: " your side.",
+        section_pricing_subtitle: "A transparent gem system: pay only what you use.",
+        btn_join_discord: "Join Discord",
+        section_how_tag: "Simple", section_how_title_1: "Ready in", section_how_title_2: " 30 seconds.",
+        step_1_title: "Connect with Discord", step_1_desc: "One click. No form, no email, no password.",
+        step_2_title: "Ask your question", step_2_desc: "Type whatever you want. Text, image, code — everything is accepted.",
+        step_3_title: "Receive a free response", step_3_desc: "DarkGPT answers without censorship, without disclaimers, without limits.",
+        footer_tagline: "The AI without limits, created by vardox58 & LeChancelier.",
+        footer_cgu: "ToS", footer_privacy: "Privacy", footer_contact: "Contact",
+        footer_copy: "© 2026 DarkGPT — All rights reserved.",
+        crypto_text: "Crypto / PayPal payment", popular_badge: "Popular", period_month: "/month"
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem('darkgpt_lang', lang);
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (window.translations[lang] && window.translations[lang][key]) {
+            el.innerHTML = window.translations[lang][key];
+        }
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    document.documentElement.lang = lang;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('darkgpt_lang') || 'fr';
+    setLanguage(savedLang);
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+    });
+
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.pageYOffset > 50);
+    });
+
+    const revealElements = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const delay = entry.target.dataset.revealDelay || 0;
+                setTimeout(() => entry.target.classList.add('revealed'), parseInt(delay));
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealElements.forEach(el => observer.observe(el));
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    initEmberParticles();
+});
+
+function initEmberParticles() {
+    const canvas = document.getElementById('emberCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const EMBER_COUNT = 45;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = document.documentElement.scrollHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    setInterval(resize, 3000);
+
+    class Ember {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.size = Math.random() * 3 + 1;
+            this.speedY = -(Math.random() * 1.2 + 0.3);
+            this.speedX = (Math.random() - 0.5) * 0.8;
+            this.opacity = Math.random() * 0.6 + 0.2;
+            this.fadeSpeed = Math.random() * 0.003 + 0.001;
+            this.wobble = Math.random() * Math.PI * 2;
+            this.wobbleSpeed = Math.random() * 0.03 + 0.01;
+            const hue = Math.random() * 40 + 5;
+            const sat = 90 + Math.random() * 10;
+            const light = 45 + Math.random() * 20;
+            this.color = `hsl(${hue}, ${sat}%, ${light}%)`;
+        }
+        update() {
+            this.wobble += this.wobbleSpeed;
+            this.x += this.speedX + Math.sin(this.wobble) * 0.3;
+            this.y += this.speedY;
+            this.opacity -= this.fadeSpeed;
+            if (this.opacity <= 0 || this.y < -20) this.reset();
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.shadowBlur = this.size * 4;
+            ctx.shadowColor = this.color;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    const embers = Array.from({ length: EMBER_COUNT }, () => {
+        const e = new Ember();
+        e.y = Math.random() * canvas.height;
+        return e;
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        embers.forEach(e => { e.update(); e.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+}
+</script>
+</body>
+</html>
